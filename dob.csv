@@ -1,0 +1,15 @@
+Qty,Value,Device,Package,Parts,Description,
+,,,,,,
+,,,,,,
+3,100nF,C-EU050-035X075,C050-035X075,"C7, C8, C9","CAPACITOR, European symbol",Kerámia
+1,10k,TRIM_US-B25P,B25P,R12,POTENTIOMETER,
+6,1k,R-EU_0204/7,0204/7,"R1, R2, R3, R4, R5, R6","RESISTOR, European symbol",
+1,47,R-EU_0204/7,0204/7,R13,"RESISTOR, European symbol",
+6,47nF,C-EU050-035X075,C050-035X075,"C1, C2, C3, C4, C5, C6","CAPACITOR, European symbol",Kerámia
+1,ARDUINOR3-DIMENSION,ARDUINOR3-DIMENSION,ARDUINOR3,ATMEGA4809,"This is a new object for the new Arduino R3 - with extra pins that you may want to use (such as IOref, and duplicated A4/A5",
+3,LM358,LM358KIT,DIP08-KIT,"U1, U2, U3",LM358,
+4,Button-TACT 6mm,,,,,
+1,LCD,,,,https://arwill.hu/termekek/optotechnika-kijelzes/kijelzok/lcd/rc1602b-ghw-esx-kijelzo-548282/,
+1,D-SUB dad,,,,https://arwill.hu/termekek/csatlakozok/adat/d-sub/d-sub-csatlakozo-aljzat-9p-428164/,
+1,D-SUB mom,,,,https://arwill.hu/termekek/csatlakozok/adat/d-sub/d-sub-csatlakozo-dugo-9p-407535/,
+10,Hangszóró kábel,,,,https://arwill.hu/termekek/vezetekek-kabelek/tekercsben/hangszoro/hangszoro-vezetek-2x0-35-521210/,m/package
