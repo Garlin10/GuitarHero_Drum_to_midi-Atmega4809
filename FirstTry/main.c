@@ -23,12 +23,12 @@ volatile uint8_t buffer[SIZE_OF_BUFFER];
 volatile uint8_t channel_looker = 0;
 //volatile uint16_t counter[6] = 0;
 volatile uint8_t note_velocity[6];
-const uint16_t min_velocity[6] = {10,10,10,10,10,10};
+const uint16_t min_velocity[6] = {10,10,30,30,30,30};
 volatile uint16_t hit_couter[6] = {0};
 volatile uint16_t time_note = 500;
 volatile uint16_t actual_max_velo[6];
 const uint8_t note_on = 0b10010000;
-const uint8_t note_C[4] = {0b00111100,0b00110110,0b00110110,0b00110110};
+const uint8_t note_C[6] = {0b00000000,0b00000001,0b00000010,0b00000011,0b00000100, 0b00000101};
 void sending(uint8_t note_switch,uint8_t note_NOTE,uint8_t note_volume);
 void put_to_buffer(uint8_t note_switch,uint8_t note_NOTE,uint8_t note_volume);
 
@@ -109,6 +109,15 @@ ISR(TCB0_INT_vect){
 		case 3:
 		ADC0.MUXPOS = ADC_MUXPOS_AIN3_gc;
 		break;
+		
+		case 4:
+		ADC0.MUXPOS = ADC_MUXPOS_AIN4_gc;
+		break;
+		
+		case 5:
+		ADC0.MUXPOS = ADC_MUXPOS_AIN5_gc;
+		break;
+		
 	}
 	ADC0.COMMAND = ADC_STCONV_bm;
 	/*uint16_t counter;
@@ -153,7 +162,7 @@ ISR(ADC0_RESRDY_vect)
 		}
 		else
 		{
-			channel_looker = (channel_looker+1)%(2);
+			channel_looker = (channel_looker+1)%(6);
 		}
 		//Növeli a hit timert, ha már volt ütés
 		if (hit_couter[channel_looker] < time_note && hit_couter[channel_looker] > 0)
@@ -177,7 +186,7 @@ ISR(ADC0_RESRDY_vect)
 			//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			hit_couter[channel_looker] = 0;
 			//Channel change
-			channel_looker = (channel_looker+1)%(2);
+			channel_looker = (channel_looker+1)%(6);
 		}
 		break;
 		case There_was_hit:
@@ -206,7 +215,7 @@ ISR(ADC0_RESRDY_vect)
 			//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			hit_couter[channel_looker] = 0;
 			state[channel_looker] = Default_state;
-			channel_looker = (channel_looker+1)%(2);
+			channel_looker = (channel_looker+1)%(6);
 		}
 	}
 	
