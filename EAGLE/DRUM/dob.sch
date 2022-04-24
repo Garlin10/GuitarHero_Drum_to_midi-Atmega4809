@@ -13080,9 +13080,9 @@ Source: http://www.bourns.com/data/global/PDFs/3223.PDF</description>
 <label x="248.92" y="-86.36" size="1.778" layer="95"/>
 </segment>
 <segment>
-<wire x1="81.28" y1="-88.9" x2="81.28" y2="-134.62" width="0.1524" layer="91"/>
-<pinref part="ATMEGA4809" gate="G$1" pin="D7"/>
-<label x="78.74" y="-137.16" size="1.778" layer="95"/>
+<pinref part="ATMEGA4809" gate="G$1" pin="D2"/>
+<wire x1="68.58" y1="-88.9" x2="68.58" y2="-111.76" width="0.1524" layer="91"/>
+<label x="66.04" y="-116.84" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="D5" class="0">
@@ -13092,9 +13092,9 @@ Source: http://www.bourns.com/data/global/PDFs/3223.PDF</description>
 <label x="248.92" y="-93.98" size="1.778" layer="95"/>
 </segment>
 <segment>
-<wire x1="78.74" y1="-88.9" x2="78.74" y2="-129.54" width="0.1524" layer="91"/>
-<pinref part="ATMEGA4809" gate="G$1" pin="D6"/>
-<label x="76.2" y="-132.08" size="1.778" layer="95"/>
+<pinref part="ATMEGA4809" gate="G$1" pin="D3"/>
+<wire x1="71.12" y1="-88.9" x2="71.12" y2="-116.84" width="0.1524" layer="91"/>
+<label x="68.58" y="-121.92" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="D6" class="0">
@@ -13104,32 +13104,12 @@ Source: http://www.bourns.com/data/global/PDFs/3223.PDF</description>
 <label x="248.92" y="-101.6" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="ATMEGA4809" gate="G$1" pin="D5"/>
-<wire x1="76.2" y1="-88.9" x2="76.2" y2="-124.46" width="0.1524" layer="91"/>
-<label x="73.66" y="-127" size="1.778" layer="95"/>
+<pinref part="ATMEGA4809" gate="G$1" pin="D4"/>
+<wire x1="73.66" y1="-88.9" x2="73.66" y2="-121.92" width="0.1524" layer="91"/>
+<label x="71.12" y="-127" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="N$24" class="0">
-<segment>
-<wire x1="73.66" y1="-88.9" x2="73.66" y2="-96.52" width="0.1524" layer="91"/>
-<pinref part="ATMEGA4809" gate="G$1" pin="D4"/>
-</segment>
-<segment>
-<wire x1="91.44" y1="-88.9" x2="91.44" y2="-119.38" width="0.1524" layer="91"/>
-<pinref part="ATMEGA4809" gate="G$1" pin="D10"/>
-</segment>
-<segment>
-<wire x1="93.98" y1="-88.9" x2="93.98" y2="-114.3" width="0.1524" layer="91"/>
-<pinref part="ATMEGA4809" gate="G$1" pin="D11"/>
-</segment>
-<segment>
-<wire x1="96.52" y1="-88.9" x2="96.52" y2="-109.22" width="0.1524" layer="91"/>
-<pinref part="ATMEGA4809" gate="G$1" pin="D12"/>
-</segment>
-<segment>
-<wire x1="99.06" y1="-88.9" x2="99.06" y2="-104.14" width="0.1524" layer="91"/>
-<pinref part="ATMEGA4809" gate="G$1" pin="D13"/>
-</segment>
 <segment>
 <wire x1="104.14" y1="-88.9" x2="104.14" y2="-104.14" width="0.1524" layer="91"/>
 <pinref part="ATMEGA4809" gate="G$1" pin="AREF"/>
@@ -13145,26 +13125,26 @@ Source: http://www.bourns.com/data/global/PDFs/3223.PDF</description>
 </net>
 <net name="B1" class="0">
 <segment>
-<pinref part="ATMEGA4809" gate="G$1" pin="D1"/>
-<wire x1="66.04" y1="-88.9" x2="66.04" y2="-104.14" width="0.1524" layer="91"/>
-<label x="63.5" y="-106.68" size="1.778" layer="95"/>
-</segment>
-<segment>
 <pinref part="X1" gate="-2" pin="S"/>
 <wire x1="226.06" y1="-20.32" x2="210.82" y2="-20.32" width="0.1524" layer="91"/>
 <label x="208.28" y="-20.32" size="1.778" layer="95"/>
 </segment>
+<segment>
+<wire x1="96.52" y1="-88.9" x2="96.52" y2="-109.22" width="0.1524" layer="91"/>
+<pinref part="ATMEGA4809" gate="G$1" pin="D12"/>
+<label x="96.52" y="-114.3" size="1.778" layer="95"/>
+</segment>
 </net>
 <net name="B2" class="0">
-<segment>
-<pinref part="ATMEGA4809" gate="G$1" pin="D2"/>
-<wire x1="68.58" y1="-88.9" x2="68.58" y2="-109.22" width="0.1524" layer="91"/>
-<label x="66.04" y="-111.76" size="1.778" layer="95"/>
-</segment>
 <segment>
 <pinref part="X1" gate="-3" pin="S"/>
 <wire x1="259.08" y1="-20.32" x2="241.3" y2="-20.32" width="0.1524" layer="91"/>
 <label x="241.3" y="-20.32" size="1.778" layer="95"/>
+</segment>
+<segment>
+<wire x1="93.98" y1="-88.9" x2="93.98" y2="-114.3" width="0.1524" layer="91"/>
+<pinref part="ATMEGA4809" gate="G$1" pin="D11"/>
+<label x="93.98" y="-119.38" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="D7" class="0">
@@ -13174,8 +13154,9 @@ Source: http://www.bourns.com/data/global/PDFs/3223.PDF</description>
 <label x="248.92" y="-109.22" size="1.778" layer="95"/>
 </segment>
 <segment>
-<wire x1="73.66" y1="-93.98" x2="73.66" y2="-119.38" width="0.1524" layer="91"/>
-<label x="71.12" y="-121.92" size="1.778" layer="95"/>
+<pinref part="ATMEGA4809" gate="G$1" pin="D5"/>
+<wire x1="76.2" y1="-88.9" x2="76.2" y2="-127" width="0.1524" layer="91"/>
+<label x="73.66" y="-132.08" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="EN" class="0">
@@ -13185,9 +13166,9 @@ Source: http://www.bourns.com/data/global/PDFs/3223.PDF</description>
 <label x="248.92" y="-78.74" size="1.778" layer="95"/>
 </segment>
 <segment>
-<wire x1="86.36" y1="-88.9" x2="86.36" y2="-129.54" width="0.1524" layer="91"/>
-<pinref part="ATMEGA4809" gate="G$1" pin="D8"/>
-<label x="86.36" y="-132.08" size="1.778" layer="95"/>
+<pinref part="ATMEGA4809" gate="G$1" pin="D7"/>
+<wire x1="81.28" y1="-88.9" x2="81.28" y2="-139.7" width="0.1524" layer="91"/>
+<label x="78.74" y="-144.78" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="RS" class="0">
@@ -13197,33 +13178,40 @@ Source: http://www.bourns.com/data/global/PDFs/3223.PDF</description>
 <label x="248.92" y="-63.5" size="1.778" layer="95"/>
 </segment>
 <segment>
-<wire x1="88.9" y1="-88.9" x2="88.9" y2="-127" width="0.1524" layer="91"/>
-<pinref part="ATMEGA4809" gate="G$1" pin="D9"/>
-<label x="88.9" y="-127" size="1.778" layer="95"/>
+<pinref part="ATMEGA4809" gate="G$1" pin="D6"/>
+<wire x1="78.74" y1="-88.9" x2="78.74" y2="-132.08" width="0.1524" layer="91"/>
+<label x="76.2" y="-137.16" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="B0" class="0">
-<segment>
-<pinref part="ATMEGA4809" gate="G$1" pin="D0"/>
-<wire x1="63.5" y1="-88.9" x2="63.5" y2="-96.52" width="0.1524" layer="91"/>
-<label x="60.96" y="-99.06" size="1.778" layer="95"/>
-</segment>
 <segment>
 <pinref part="X1" gate="-1" pin="S"/>
 <wire x1="195.58" y1="-20.32" x2="172.72" y2="-20.32" width="0.1524" layer="91"/>
 <label x="172.72" y="-20.32" size="1.778" layer="95"/>
 </segment>
+<segment>
+<wire x1="99.06" y1="-88.9" x2="99.06" y2="-104.14" width="0.1524" layer="91"/>
+<pinref part="ATMEGA4809" gate="G$1" pin="D13"/>
+<label x="99.06" y="-109.22" size="1.778" layer="95"/>
+</segment>
 </net>
 <net name="B3" class="0">
-<segment>
-<pinref part="ATMEGA4809" gate="G$1" pin="D3"/>
-<wire x1="71.12" y1="-88.9" x2="71.12" y2="-114.3" width="0.1524" layer="91"/>
-<label x="68.58" y="-116.84" size="1.778" layer="95"/>
-</segment>
 <segment>
 <pinref part="X1" gate="-4" pin="S"/>
 <wire x1="292.1" y1="-20.32" x2="274.32" y2="-20.32" width="0.1524" layer="91"/>
 <label x="274.32" y="-20.32" size="1.778" layer="95"/>
+</segment>
+<segment>
+<wire x1="91.44" y1="-88.9" x2="91.44" y2="-119.38" width="0.1524" layer="91"/>
+<pinref part="ATMEGA4809" gate="G$1" pin="D10"/>
+<label x="91.44" y="-124.46" size="1.778" layer="95"/>
+</segment>
+</net>
+<net name="BUTTON_GND" class="0">
+<segment>
+<pinref part="ATMEGA4809" gate="G$1" pin="GND"/>
+<wire x1="101.6" y1="-88.9" x2="101.6" y2="-93.98" width="0.1524" layer="91"/>
+<label x="101.6" y="-99.06" size="1.778" layer="95"/>
 </segment>
 </net>
 </nets>

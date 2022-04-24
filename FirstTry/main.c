@@ -11,6 +11,8 @@
 #include <util/delay.h>
 #include <avr/interrupt.h>
 #include <stdint.h>
+#include "lcd.h"  
+
 //DEBUGSTUFF
 volatile uint16_t sampleTomb[200];
 volatile uint16_t n = 0;
@@ -23,12 +25,12 @@ volatile uint8_t buffer[SIZE_OF_BUFFER];
 volatile uint8_t channel_looker = 0;
 //volatile uint16_t counter[6] = 0;
 volatile uint8_t note_velocity[6];
-const uint16_t min_velocity[6] = {10,10,30,30,30,30};
+const uint16_t min_velocity[6] = {10,10,20,32,20,20};
 volatile uint16_t hit_couter[6] = {0};
-volatile uint16_t time_note = 500;
+volatile uint16_t time_note = 120;
 volatile uint16_t actual_max_velo[6];
 const uint8_t note_on = 0b10010000;
-const uint8_t note_C[6] = {0b00000000,0b00000001,0b00000010,0b00000011,0b00000100, 0b00000101};
+const uint8_t note_C[6] = {25,36,0b00000110,0b00000111,15, 0b00001101};
 void sending(uint8_t note_switch,uint8_t note_NOTE,uint8_t note_volume);
 void put_to_buffer(uint8_t note_switch,uint8_t note_NOTE,uint8_t note_volume);
 
@@ -45,6 +47,12 @@ int main(void)
 	// Set port directions.
 	PORTB.DIR = PIN4_bm;
 	PORTD.DIR = PIN6_bm;
+	/* Replace with your application code */
+	PORTD.OUT = 0x00;
+	
+	//Print HELLO LCD
+	lcdInit();
+	lcdString("hello");
 	
 	// Init UART.
 	USART3.BAUD = 313;
@@ -70,8 +78,7 @@ int main(void)
     // Enable global interrupts
     sei();
 	
-	/* Replace with your application code */
-	PORTD.OUT = 0x00;
+	
     while (1)
     {
 		asm("NOP");
