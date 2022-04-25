@@ -13,6 +13,7 @@
 #include <stdint.h>
 #include "lcd.h"  
 
+//EEPROM_READ EEPROM_WRITE
 //DEBUGSTUFF
 volatile uint16_t sampleTomb[200];
 volatile uint16_t n = 0;
@@ -46,14 +47,17 @@ int main(void)
 	
 	// Set port directions.
 	PORTB.DIR = PIN4_bm;
-	PORTD.DIR = PIN6_bm;
+	//PORTD.DIR = PIN6_bm;
 	/* Replace with your application code */
 	PORTD.OUT = 0x00;
 	
 	//Print HELLO LCD
-	lcdInit();
-	lcdString("hello");
-	
+	LCD_Init();
+	LCD_String("hello");
+	while (1)
+	{
+		asm("NOP");
+	}
 	// Init UART.
 	USART3.BAUD = 313;
 	USART3.CTRLB = USART_TXEN_bm;
