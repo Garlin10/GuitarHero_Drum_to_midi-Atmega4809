@@ -11,7 +11,8 @@
 #include <util/delay.h>
 #include <avr/interrupt.h>
 #include <stdint.h>
-#include "lcd.h"  
+#include "lcd.h" 
+#include "debouncer.h"
 
 //EEPROM_READ EEPROM_WRITE
 //DEBUGSTUFF
@@ -54,9 +55,18 @@ int main(void)
 	//Print HELLO LCD
 	LCD_Init();
 	LCD_String("hello");
+	LCD_Command(0x01);              /* Clear display screen*/
+	LCD_String_xy (0, 5, "hello");
+	LCD_String_xy (1, 5, "world");
+	//LCD_Command(0x01);              /* Clear display screen*/
+	
+	
 	while (1)
 	{
-		asm("NOP");
+		if (button_down(BUTTON1_MASK))
+		{
+			
+		}
 	}
 	// Init UART.
 	USART3.BAUD = 313;

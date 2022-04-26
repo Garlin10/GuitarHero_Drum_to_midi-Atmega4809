@@ -2,7 +2,7 @@
   debounce.c
  */
 
-#include "debounce.h"
+#include "debouncer.h"
 
 // Bits is set to one if a depounced press is detected.
 volatile uint8_t buttons_down;
@@ -22,9 +22,7 @@ uint8_t button_down(uint8_t button_mask)
 }
 
 void debounce_init(void)
-{
-    // Button pins as input
-    BUTTON_DDR &= ~(BUTTON_MASK);
+{	
     // Enable pullup on buttons
-    BUTTON_PORT |= BUTTON_MASK;
+    PORTE_IN |= (1<<B1_PIN);
 }

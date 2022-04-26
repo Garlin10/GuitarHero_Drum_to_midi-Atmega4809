@@ -136,6 +136,12 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="debouncer.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="debouncer.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="lcd_1.c">
       <SubType>compile</SubType>
     </Compile>

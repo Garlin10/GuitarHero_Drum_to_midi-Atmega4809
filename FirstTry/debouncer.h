@@ -10,12 +10,12 @@
 #include <util/atomic.h>
 
 // Buttons connected to PA0 and PA1
-#define BUTTON_PORT  PORTA
-#define BUTTON_PIN   PINA
-#define BUTTON_DDR   DDRA
-#define BUTTON1_MASK (1<<PA0)
-#define BUTTON2_MASK (1<<PA1)
-#define BUTTON_MASK  (BUTTON1_MASK | BUTTON2_MASK)
+
+#define B1_PORT  PORTE_IN
+#define B1_DIR PORTE_DIR
+#define B1_PIN   2
+#define BUTTON1_MASK (1<<B1_PIN)
+#define BUTTON_MASK  (BUTTON1_MASK)
 
 // Variable to tell that the button is pressed (and debounced).
 // Can be read with button_down() which will clear it.
@@ -45,7 +45,7 @@ static inline void debounce(void)
 
     // Read buttons (active low so invert with ~). Xor with
     // button_state to see which ones are about to change state
-    uint8_t state_changed = ~BUTTON_PIN ^ button_state;
+    uint8_t state_changed = ~PORTE_IN ^ button_state;
 
     // Decrease counters where state_changed = 1, set the others to 0b11.
     VC_DEC_OR_SET(vcount_high, vcount_low, state_changed);

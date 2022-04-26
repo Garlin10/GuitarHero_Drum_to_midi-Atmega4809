@@ -97,6 +97,7 @@ void LCD_Char( unsigned char data )
 
 void LCD_Init (void)			/* LCD Initialize function */
 {
+	
 	RS_DIR |= (1<<RS);
 	EN_DIR |= (1 << EN);			/* Make LCD port direction as o/p */
 	D4_DIR |= (1 << D4_PIN);
