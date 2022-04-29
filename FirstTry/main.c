@@ -59,13 +59,28 @@ int main(void)
 	LCD_String_xy (0, 5, "hello");
 	LCD_String_xy (1, 5, "world");
 	//LCD_Command(0x01);              /* Clear display screen*/
-	
+	//BUTTON INIC
+	debounce_init();
 	
 	while (1)
 	{
+		//B1_FLAG-et csinálni, hogy le van-e nyomva
+		//IDe hívom a gombot
+		//ELsõ állapt az TIMER állítása
+		//GOMB lenyomva/Vissza
+		//Utolsó állapot a TIMER ÁLLÍtása
+		//GOmb felengedve/vissza
 		if (button_down(BUTTON1_MASK))
 		{
+				LCD_String_xy (0, 5, "DOIT");
+				_delay_ms(100);
+				
+		}
+		else
+		{
 			
+			LCD_String_xy (0, 5, "MAS");
+			_delay_ms(100);
 		}
 	}
 	// Init UART.
@@ -138,7 +153,7 @@ ISR(TCB0_INT_vect){
 		case 5:
 		ADC0.MUXPOS = ADC_MUXPOS_AIN5_gc;
 		break;
-		
+		//Ide egy iemr változó mindegyik gombra És ezt a Timert csökkentem de 0 alá ne menjen
 	}
 	ADC0.COMMAND = ADC_STCONV_bm;
 	/*uint16_t counter;

@@ -8,21 +8,25 @@
 volatile uint8_t buttons_down;
 
 // Return non-zero if a button matching mask is pressed.
+//button_mask-ot kivenni
+//20ms várok utána váltok csak állapotot
 uint8_t button_down(uint8_t button_mask)
 {
-    // ATOMIC_BLOCK is needed if debounce() is called from within an ISR
-    ATOMIC_BLOCK(ATOMIC_RESTORESTATE){
-	// And with debounced state for a one if they match
-	button_mask &= buttons_down;
-	// Clear if there was a match
-	buttons_down ^= button_mask;
-    }
-    // Return non-zero if there was a match
-    return button_mask;
+    uint8_t PORT_INFO = PORTE.IN;
+	PORT_INFO &= (button_mask);
+	if(PORT_INFO)
+	{
+		return 0;
+	}
+	else
+	{
+		return 1;
+	}
 }
 
 void debounce_init(void)
 {	
     // Enable pullup on buttons
-    PORTE_IN |= (1<<B1_PIN);
+    B1_PORT |= (BUTTON_MASK);
+	PORTE.PIN2CTRL = PORT_PULLUPEN_bm;
 }

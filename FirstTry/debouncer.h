@@ -11,8 +11,8 @@
 
 // Buttons connected to PA0 and PA1
 
-#define B1_PORT  PORTE_IN
-#define B1_DIR PORTE_DIR
+#define B1_PORT  PORTE.IN
+#define B1_DIR PORTE.DIR
 #define B1_PIN   2
 #define BUTTON1_MASK (1<<B1_PIN)
 #define BUTTON_MASK  (BUTTON1_MASK)
