@@ -11,18 +11,42 @@
 
 // Buttons connected to PA0 and PA1
 
-#define B1_PORT  PORTE.IN
-#define B1_DIR PORTE.DIR
-#define B1_PIN   2
-#define BUTTON1_MASK (1<<B1_PIN)
+#define E2_PORT  PORTE.IN
+#define E2_DIR	 PORTE.DIR
+#define E1_PORT  PORTE.IN
+#define E1_DIR	 PORTE.DIR
+#define E0_PORT  PORTE.IN
+#define E0_DIR	 PORTE.DIR
+#define B1_PORT  PORTB.IN
+#define B1_DIR	 PORTB.DIR
+#define Bal_PIN   2
+#define E1_PIN	  1
+#define E0_PIN	  0
+#define B1_PIN	  1
+
+#define BUTTON1_MASK (1<<Bal_PIN)
+#define BUTTON2_MASK (1<<E1_PIN)
+#define BUTTON3_MASK (1<<E0_PIN)
+#define BUTTON4_MASK (1<<B1_PIN)
 #define BUTTON_MASK  (BUTTON1_MASK)
+
+typedef enum 
+{ 
+	Released,
+    PushedDown_Wait, 
+    PushedDown_DoingSomething, 
+	Released_Wait 
+} Button_Machine;
+
+
+
 
 // Variable to tell that the button is pressed (and debounced).
 // Can be read with button_down() which will clear it.
 extern volatile uint8_t buttons_down;
 
 // Return non-zero if a button matching mask is pressed.
-uint8_t button_down(uint8_t button_mask);
+uint8_t button_down(uint8_t button_mask, char port);
 
 // Make button pins inputs and activate internal pullups.
 void debounce_init(void);

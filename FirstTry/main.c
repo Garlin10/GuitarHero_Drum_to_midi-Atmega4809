@@ -13,6 +13,8 @@
 #include <stdint.h>
 #include "lcd.h" 
 #include "debouncer.h"
+#include <stdio.h>
+#include <string.h>
 
 //EEPROM_READ EEPROM_WRITE
 //DEBUGSTUFF
@@ -35,6 +37,8 @@ const uint8_t note_on = 0b10010000;
 const uint8_t note_C[6] = {25,36,0b00000110,0b00000111,15, 0b00001101};
 void sending(uint8_t note_switch,uint8_t note_NOTE,uint8_t note_volume);
 void put_to_buffer(uint8_t note_switch,uint8_t note_NOTE,uint8_t note_volume);
+volatile Button_Machine Left_Button_Machine = PushedDown_DoingSomething;
+volatile int Button_Timer = 0;
 
 enum states{Default_state, There_was_hit};
 enum states state[6] = {Default_state,Default_state,Default_state,Default_state,Default_state,Default_state};
@@ -58,10 +62,11 @@ int main(void)
 	LCD_Command(0x01);              /* Clear display screen*/
 	LCD_String_xy (0, 5, "hello");
 	LCD_String_xy (1, 5, "world");
+	LCD_Command(0x01); 
 	//LCD_Command(0x01);              /* Clear display screen*/
 	//BUTTON INIC
 	debounce_init();
-	
+	int SZAM =0;
 	while (1)
 	{
 		//B1_FLAG-et csinálni, hogy le van-e nyomva
@@ -70,18 +75,92 @@ int main(void)
 		//GOMB lenyomva/Vissza
 		//Utolsó állapot a TIMER ÁLLÍtása
 		//GOmb felengedve/vissza
-		if (button_down(BUTTON1_MASK))
+		if (button_down(BUTTON1_MASK, 'E')){
+		switch(Left_Button_Machine)
 		{
-				LCD_String_xy (0, 5, "DOIT");
-				_delay_ms(100);
+			case Released:
+			if (button_down(BUTTON1_MASK, 'E'))
+			{
+				Left_Button_Machine = PushedDown_Wait;
+				Button_Timer = 1000;
+			}
+			break;
+			case PushedDown_Wait:
+			if (Button_Timer < 1)
+			{
+				if (button_down(BUTTON1_MASK, 'E'))
+				{
+					Left_Button_Machine = PushedDown_DoingSomething;
+				}
+				else
+				{
+					Left_Button_Machine = Released;
+				}
+			}
+			break;
+			case PushedDown_DoingSomething:
+			LCD_Command(0x01);
+			LCD_String_xy (0, 5, "LEFT");
+			char buf[ 1024];
+				sprintf( buf, "%d", SZAM);
+				LCD_String_xy (1, 5, buf);
+			_delay_ms(100);
+			SZAM++;
+			if (!(button_down(BUTTON1_MASK, 'E')))
+			{
+				Button_Timer = 1000;
+				Left_Button_Machine = Released_Wait;
+			}
+			break;
+			case Released_Wait:
+			if (Button_Timer < 1)
+			{
+				if (button_down(BUTTON1_MASK, 'E'))
+				{
+					Left_Button_Machine = PushedDown_DoingSomething;
+				}
+				else
+				{
+					Left_Button_Machine = Released;
+				}
+			}
 				
 		}
-		else
-		{
-			
-			LCD_String_xy (0, 5, "MAS");
-			_delay_ms(100);
 		}
+	
+		/*if (button_down(BUTTON1_MASK, 'E'))
+		{
+			LCD_Command(0x01); 
+				LCD_String_xy (0, 5, "LEFT");
+				char buf[ 1024];
+				sprintf( buf, "%d", SZAM);
+				LCD_String_xy (1, 5, buf);
+			_delay_ms(100);
+			SZAM++;
+				
+		}*/
+		if (button_down(BUTTON2_MASK, 'E'))
+		{
+			LCD_Command(0x01); 
+			LCD_String_xy (0, 5, "RIGHT");
+			_delay_ms(100);
+			
+		}
+		if (button_down(BUTTON3_MASK, 'E'))
+		{
+			LCD_Command(0x01); 
+			LCD_String_xy (0, 5, "DOWN");
+			_delay_ms(100);
+			
+		}
+		if (button_down(BUTTON4_MASK, 'B'))
+		{
+			LCD_Command(0x01);
+			LCD_String_xy (0, 5, "UP");
+			_delay_ms(100);
+			
+		}
+		
 	}
 	// Init UART.
 	USART3.BAUD = 313;
@@ -127,6 +206,10 @@ int main(void)
 
 ISR(TCB0_INT_vect){
 	TCB0.INTFLAGS = TCB_CAPT_bm;
+	if (Button_Timer>0)
+	{
+		Button_Timer --;
+	}
 	switch(channel_looker)
 	{
 		case 0:
@@ -153,29 +236,10 @@ ISR(TCB0_INT_vect){
 		case 5:
 		ADC0.MUXPOS = ADC_MUXPOS_AIN5_gc;
 		break;
+		
 		//Ide egy iemr változó mindegyik gombra És ezt a Timert csökkentem de 0 alá ne menjen
 	}
 	ADC0.COMMAND = ADC_STCONV_bm;
-	/*uint16_t counter;
-	if (counter >=10000)
-	{
-		
-		counter ++;
-		//portd.out = 0x40;
-		if (counter >= 20000)
-		{
-			counter = 0;
-		
-		}
-		
-		
-	}
-	else
-	{
-		counter ++;
-		portd.out = 0x00;
-		
-	}*/
 }
 ISR(ADC0_RESRDY_vect)
 {
