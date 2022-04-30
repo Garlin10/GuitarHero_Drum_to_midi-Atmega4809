@@ -37,8 +37,9 @@ const uint8_t note_on = 0b10010000;
 const uint8_t note_C[6] = {25,36,0b00000110,0b00000111,15, 0b00001101};
 void sending(uint8_t note_switch,uint8_t note_NOTE,uint8_t note_volume);
 void put_to_buffer(uint8_t note_switch,uint8_t note_NOTE,uint8_t note_volume);
-volatile Button_Machine Left_Button_Machine = PushedDown_DoingSomething;
+volatile Button_Machine Left_Button_Machine = Released;
 volatile int Button_Timer = 0;
+volatile uint8_t LEFT_BUTTON_FLAG = 0;
 
 enum states{Default_state, There_was_hit};
 enum states state[6] = {Default_state,Default_state,Default_state,Default_state,Default_state,Default_state};
@@ -56,6 +57,16 @@ int main(void)
 	/* Replace with your application code */
 	PORTD.OUT = 0x00;
 	
+	// Init UART.
+	USART3.BAUD = 313;
+	USART3.CTRLB = USART_TXEN_bm;
+	
+	// Init TCB0 timer.
+	TCB0.INTCTRL = TCB_CAPT_bm;
+	TCB0.CNT = 0;
+	TCB0.CCMP = 330;
+	TCB0.CTRLA = TCB_ENABLE_bm;
+	
 	//Print HELLO LCD
 	LCD_Init();
 	LCD_String("hello");
@@ -67,6 +78,9 @@ int main(void)
 	//BUTTON INIC
 	debounce_init();
 	int SZAM =0;
+	
+	// Enable global interrupts
+    sei();
 	while (1)
 	{
 		//B1_FLAG-et csinálni, hogy le van-e nyomva
@@ -75,14 +89,13 @@ int main(void)
 		//GOMB lenyomva/Vissza
 		//Utolsó állapot a TIMER ÁLLÍtása
 		//GOmb felengedve/vissza
-		if (button_down(BUTTON1_MASK, 'E')){
 		switch(Left_Button_Machine)
-		{
+		{			
 			case Released:
 			if (button_down(BUTTON1_MASK, 'E'))
 			{
 				Left_Button_Machine = PushedDown_Wait;
-				Button_Timer = 1000;
+				Button_Timer = 200;
 			}
 			break;
 			case PushedDown_Wait:
@@ -91,24 +104,31 @@ int main(void)
 				if (button_down(BUTTON1_MASK, 'E'))
 				{
 					Left_Button_Machine = PushedDown_DoingSomething;
+					LEFT_BUTTON_FLAG = 1;
+					
 				}
 				else
 				{
 					Left_Button_Machine = Released;
+					
 				}
 			}
 			break;
 			case PushedDown_DoingSomething:
-			LCD_Command(0x01);
-			LCD_String_xy (0, 5, "LEFT");
-			char buf[ 1024];
+			if (LEFT_BUTTON_FLAG == 1)
+			{
+				LCD_Command(0x01);
+				LCD_String_xy (0, 5, "LEFT");
+				char buf[ 1024];
 				sprintf( buf, "%d", SZAM);
 				LCD_String_xy (1, 5, buf);
-			_delay_ms(100);
-			SZAM++;
+				_delay_ms(100);
+				SZAM++;
+			}
+			LEFT_BUTTON_FLAG = 0;
 			if (!(button_down(BUTTON1_MASK, 'E')))
 			{
-				Button_Timer = 1000;
+				Button_Timer = 200;
 				Left_Button_Machine = Released_Wait;
 			}
 			break;
@@ -124,8 +144,10 @@ int main(void)
 					Left_Button_Machine = Released;
 				}
 			}
+			default:
+			Left_Button_Machine = Released;
+			break;
 				
-		}
 		}
 	
 		/*if (button_down(BUTTON1_MASK, 'E'))
@@ -145,12 +167,14 @@ int main(void)
 			LCD_String_xy (0, 5, "RIGHT");
 			_delay_ms(100);
 			
+			
 		}
 		if (button_down(BUTTON3_MASK, 'E'))
 		{
 			LCD_Command(0x01); 
 			LCD_String_xy (0, 5, "DOWN");
 			_delay_ms(100);
+			
 			
 		}
 		if (button_down(BUTTON4_MASK, 'B'))
@@ -159,18 +183,11 @@ int main(void)
 			LCD_String_xy (0, 5, "UP");
 			_delay_ms(100);
 			
+			
 		}
 		
 	}
-	// Init UART.
-	USART3.BAUD = 313;
-	USART3.CTRLB = USART_TXEN_bm;
 	
-	// Init TCB0 timer.
-	TCB0.INTCTRL = TCB_CAPT_bm;
-	TCB0.CNT = 0;
-	TCB0.CCMP = 330;
-	TCB0.CTRLA = TCB_ENABLE_bm;
 	
 	//ADC
 	//VDD 1 << 4
