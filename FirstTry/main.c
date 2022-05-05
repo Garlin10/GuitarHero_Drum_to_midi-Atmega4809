@@ -37,9 +37,91 @@ const uint8_t note_on = 0b10010000;
 const uint8_t note_C[6] = {25,36,0b00000110,0b00000111,15, 0b00001101};
 void sending(uint8_t note_switch,uint8_t note_NOTE,uint8_t note_volume);
 void put_to_buffer(uint8_t note_switch,uint8_t note_NOTE,uint8_t note_volume);
-volatile Button_Machine Left_Button_Machine = Released;
-volatile int Button_Timer = 0;
-volatile uint8_t LEFT_BUTTON_FLAG = 0;
+volatile Button_Machine Button_Machines[4] = {Released,Released,Released,Released};
+volatile uint8_t BUTTON_FLAGS[4] = {0,0,0,0};
+volatile int Button_Timers[4] = {0,0,0,0};
+	void LCD_menu(uint8_t state)
+	{
+		switch (state)
+		{
+			case 0:
+			LCD_Command(0x01);
+			LCD_String_xy (0, 2, "Guitar Hero");
+			LCD_String_xy (1, 3, "Let's Rock");
+
+			_delay_ms(100);
+			break;
+			case 1:
+			LCD_Command(0x01);
+			LCD_String_xy (0, 4, "Red Note");
+			char buf[ 1024];
+			sprintf( buf, "%d", note_C[0]);
+			LCD_String_xy (1, 8, buf);
+
+			_delay_ms(100);
+			break;
+			
+		}
+	}
+void release_state(uint8_t button)
+{
+	Button_Machines[button] = PushedDown_Wait;
+	Button_Timers[button] = 200;
+}
+void pusheddown_wait_state(uint8_t mask,char port, uint8_t button)
+{
+	if (Button_Timers[0] < 1)
+			{
+			if (button_down(mask, port))
+				{
+					Button_Machines[button] = PushedDown_DoingSomething;
+					BUTTON_FLAGS[button] = 1;
+					
+				}
+				else
+				{
+					Button_Machines[button] = Released;
+					
+				}
+					
+			}
+}
+void pusheddown_doingsomething_state(uint8_t mask,char port, uint8_t button,char* State_Name )
+{
+	if (BUTTON_FLAGS[button] == 1)
+			{
+				if(button == 0 || button == 1)
+				{
+					LCD_menu(1);
+				}
+							}
+			BUTTON_FLAGS[button] = 0;
+			if (!(button_down(mask, port)))
+			{
+				Button_Timers[button] = 200;
+				Button_Machines[button] = Released_Wait;
+			}
+}
+void released_wait_state(uint8_t mask,char port, uint8_t button)
+{
+	if (Button_Timers[button] < 1)
+			{
+				if (button_down(mask, port))
+				{
+					Button_Machines[button] = PushedDown_DoingSomething;
+				}
+				else
+				{
+					Button_Machines[button] = Released;
+				}
+			}
+}
+
+	/*0 Left
+	  1 Right
+	  2 Up
+	  3 Down
+	 */
 
 enum states{Default_state, There_was_hit};
 enum states state[6] = {Default_state,Default_state,Default_state,Default_state,Default_state,Default_state};
@@ -77,8 +159,16 @@ int main(void)
 	//LCD_Command(0x01);              /* Clear display screen*/
 	//BUTTON INIC
 	debounce_init();
-	int SZAM =0;
-	
+	//ADC
+	//VDD 1 << 4
+	PORTD.PIN0CTRL = PORT_ISC_INPUT_DISABLE_gc;
+	PORTD.PIN1CTRL = PORT_ISC_INPUT_DISABLE_gc;
+	ADC0.CTRLC = ADC_SAMPCAP_bm | ADC_REFSEL0_bm | ADC_PRESC_DIV16_gc;
+	ADC0.MUXPOS = ADC_MUXPOS_AIN0_gc;
+	ADC0.INTCTRL = ADC_RESRDY_bm;
+	ADC0.CTRLA = ADC_ENABLE_bm;
+
+	//ADC0.CTRLC = ADC_REFSEL0_bm; 
 	// Enable global interrupts
     sei();
 	while (1)
@@ -89,143 +179,113 @@ int main(void)
 		//GOMB lenyomva/Vissza
 		//Utolsó állapot a TIMER ÁLLÍtása
 		//GOmb felengedve/vissza
-		switch(Left_Button_Machine)
+		switch(Button_Machines[0])
 		{			
 			case Released:
 			if (button_down(BUTTON1_MASK, 'E'))
-			{
-				Left_Button_Machine = PushedDown_Wait;
-				Button_Timer = 200;
+			{      
+				release_state(0);
 			}
 			break;
 			case PushedDown_Wait:
-			if (Button_Timer < 1)
-			{
-				if (button_down(BUTTON1_MASK, 'E'))
-				{
-					Left_Button_Machine = PushedDown_DoingSomething;
-					LEFT_BUTTON_FLAG = 1;
-					
-				}
-				else
-				{
-					Left_Button_Machine = Released;
-					
-				}
-			}
+			pusheddown_wait_state(BUTTON1_MASK,'E',0);
 			break;
 			case PushedDown_DoingSomething:
-			if (LEFT_BUTTON_FLAG == 1)
-			{
-				LCD_Command(0x01);
-				LCD_String_xy (0, 5, "LEFT");
-				char buf[ 1024];
-				sprintf( buf, "%d", SZAM);
-				LCD_String_xy (1, 5, buf);
-				_delay_ms(100);
-				SZAM++;
-			}
-			LEFT_BUTTON_FLAG = 0;
-			if (!(button_down(BUTTON1_MASK, 'E')))
-			{
-				Button_Timer = 200;
-				Left_Button_Machine = Released_Wait;
-			}
+			pusheddown_doingsomething_state(BUTTON1_MASK, 'E', 0,"Left" );
 			break;
 			case Released_Wait:
-			if (Button_Timer < 1)
-			{
-				if (button_down(BUTTON1_MASK, 'E'))
-				{
-					Left_Button_Machine = PushedDown_DoingSomething;
-				}
-				else
-				{
-					Left_Button_Machine = Released;
-				}
-			}
+			released_wait_state(BUTTON1_MASK,'E', 0);
 			default:
-			Left_Button_Machine = Released;
+			Button_Machines[0] = Released;
 			break;
 				
 		}
 	
-		/*if (button_down(BUTTON1_MASK, 'E'))
-		{
-			LCD_Command(0x01); 
-				LCD_String_xy (0, 5, "LEFT");
-				char buf[ 1024];
-				sprintf( buf, "%d", SZAM);
-				LCD_String_xy (1, 5, buf);
-			_delay_ms(100);
-			SZAM++;
+		switch(Button_Machines[1])
+		{			
+			case Released:
+			if (button_down(BUTTON2_MASK, 'E'))
+			{      
+				release_state(1);
+			}
+			break;
+			case PushedDown_Wait:
+			pusheddown_wait_state(BUTTON2_MASK,'E',1);
+			break;
+			case PushedDown_DoingSomething:
+			pusheddown_doingsomething_state(BUTTON2_MASK, 'E', 1,"Rihtt" );
+			break;
+			case Released_Wait:
+			released_wait_state(BUTTON2_MASK,'E', 1);
+			default:
+			Button_Machines[1] = Released;
+			break;
 				
-		}*/
-		if (button_down(BUTTON2_MASK, 'E'))
-		{
-			LCD_Command(0x01); 
-			LCD_String_xy (0, 5, "RIGHT");
-			_delay_ms(100);
-			
-			
 		}
-		if (button_down(BUTTON3_MASK, 'E'))
-		{
-			LCD_Command(0x01); 
-			LCD_String_xy (0, 5, "DOWN");
-			_delay_ms(100);
-			
-			
+		switch(Button_Machines[2])
+		{			
+			case Released:
+			if (button_down(BUTTON3_MASK, 'E'))
+			{      
+				release_state(2);
+			}
+			break;
+			case PushedDown_Wait:
+			pusheddown_wait_state(BUTTON3_MASK,'E',2);
+			break;
+			case PushedDown_DoingSomething:
+			pusheddown_doingsomething_state(BUTTON3_MASK, 'E', 2,"Down" );
+			break;
+			case Released_Wait:
+			released_wait_state(BUTTON2_MASK,'E', 2);
+			default:
+			Button_Machines[2] = Released;
+			break;
+				
 		}
-		if (button_down(BUTTON4_MASK, 'B'))
-		{
-			LCD_Command(0x01);
-			LCD_String_xy (0, 5, "UP");
-			_delay_ms(100);
-			
-			
+		switch(Button_Machines[3])
+		{			
+			case Released:
+			if (button_down(BUTTON4_MASK, 'B'))
+			{      
+				release_state(3);
+			}
+			break;
+			case PushedDown_Wait:
+			pusheddown_wait_state(BUTTON4_MASK, 'B',3);
+			break;
+			case PushedDown_DoingSomething:
+			pusheddown_doingsomething_state(BUTTON4_MASK, 'B',3,"Up" );
+			break;
+			case Released_Wait:
+			released_wait_state(BUTTON4_MASK, 'B',3);
+			default:
+			Button_Machines[3] = Released;
+			break;
+				
 		}
 		
 	}
 	
-	
-	//ADC
-	//VDD 1 << 4
-	PORTD.PIN0CTRL = PORT_ISC_INPUT_DISABLE_gc;
-	PORTD.PIN1CTRL = PORT_ISC_INPUT_DISABLE_gc;
-	ADC0.CTRLC = ADC_SAMPCAP_bm | ADC_REFSEL0_bm | ADC_PRESC_DIV16_gc;
-	ADC0.MUXPOS = ADC_MUXPOS_AIN0_gc;
-	ADC0.INTCTRL = ADC_RESRDY_bm;
-	ADC0.CTRLA = ADC_ENABLE_bm;
-
-	//ADC0.CTRLC = ADC_REFSEL0_bm;
-	
-    // Enable global interrupts
-    sei();
-	
-	
-    while (1)
-    {
-		asm("NOP");
-		//if (TCB0.CNT > 1500) PORTD.OUT = 0x00;
-		//if(TCB0.INTFLAGS & 1) PORTD.OUT = 0x00;
-		/*if(USART3.STATUS & USART_DREIF_bm)
-		{
-			USART3.TXDATAL = 'U';
-			PORTD.OUT = 0x40;
-			_delay_ms(1000);
-			PORTD.OUT = 0x00;
-		_delay_ms(1000);
-		}*/
-		
-	}
 }
 
 ISR(TCB0_INT_vect){
 	TCB0.INTFLAGS = TCB_CAPT_bm;
-	if (Button_Timer>0)
+	if (Button_Timers[0]>0)
 	{
-		Button_Timer --;
+		Button_Timers[0] --;
+	}
+	if (Button_Timers[1]>0)
+	{
+		Button_Timers[1] --;
+	}
+	if (Button_Timers[2]>0)
+	{
+		Button_Timers[2] --;
+	}
+	if (Button_Timers[3]>0)
+	{
+		Button_Timers[3] --;
 	}
 	switch(channel_looker)
 	{
