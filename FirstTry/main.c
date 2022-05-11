@@ -30,17 +30,56 @@ volatile uint8_t buffer[SIZE_OF_BUFFER];
 volatile uint8_t channel_looker = 0;
 //volatile uint16_t counter[6] = 0;
 volatile uint8_t note_velocity[6];
-const uint16_t min_velocity[6] = {10,10,20,32,20,300};
+//kick,green,orange,blue,yellow, red
+volatile uint16_t min_velocity[6] = {20,20,20,32,20,300};
 volatile uint16_t hit_couter[6] = {0};
-volatile uint16_t time_note = 120;
+volatile uint16_t time_note = 200;
 volatile uint16_t actual_max_velo[6];
 const uint8_t note_on = 0b10010000;
-const uint8_t note_C[6] = {0,1,2,3,4, 5};
+volatile uint8_t note_C[6] = {0,1,2,3,4, 5};
 void sending(uint8_t note_switch,uint8_t note_NOTE,uint8_t note_volume);
 void put_to_buffer(uint8_t note_switch,uint8_t note_NOTE,uint8_t note_volume);
 volatile Button_Machine Button_Machines[4] = {Released,Released,Released,Released};
 volatile uint8_t BUTTON_FLAGS[4] = {0,0,0,0};
 volatile int Button_Timers[4] = {0,0,0,0};
+	void note_value_changer(uint8_t pokemon, uint8_t plusz_minus)
+	{
+		if(plusz_minus)
+		{
+			note_C[pokemon]++;
+		}
+		else
+		{
+			if (0>note_C[pokemon])
+			{
+				note_C[pokemon]=0;
+			}
+			else
+			{
+				note_C[pokemon]--;
+			}
+			
+		}
+	}
+	void velocity_value_changer(uint8_t pokemon, uint8_t plusz_minus)
+	{
+		if(plusz_minus)
+		{
+			min_velocity[pokemon]++;
+		}
+		else
+		{
+			if (0>min_velocity[pokemon])
+			{
+				min_velocity[pokemon]=0;
+			}
+			else
+			{
+				min_velocity[pokemon]--;
+			}
+			
+		}
+	}
 	void LCD_menu(uint8_t state)
 	{
 		char buf[ 1024];
@@ -65,7 +104,212 @@ volatile int Button_Timers[4] = {0,0,0,0};
 			LCD_Command(0x01);
 			LCD_String_xy (0, 0, "Kick Velocity");
 			
-			sprintf( buf, "%d", note_velocity[0]);
+			sprintf( buf, "%d", min_velocity[0]);
+			LCD_String_xy (1, 8, buf);
+
+			_delay_ms(100);
+			break;
+			case 3:
+			LCD_Command(0x01);
+			LCD_String_xy (0, 4, "Green Note");
+			sprintf( buf, "%d", note_C[1]);
+			LCD_String_xy (1, 8, buf);
+
+			_delay_ms(100);
+			break;
+			case 4:
+			LCD_Command(0x01);
+			LCD_String_xy (0, 0, "Green Velocity");
+			
+			sprintf( buf, "%d", min_velocity[1]);
+			LCD_String_xy (1, 8, buf);
+
+			_delay_ms(100);
+			break;
+			case 5:
+			LCD_Command(0x01);
+			LCD_String_xy (0, 4, "Orange Note");
+			sprintf( buf, "%d", note_C[2]);
+			LCD_String_xy (1, 8, buf);
+
+			_delay_ms(100);
+			break;
+			case 6:
+			LCD_Command(0x01);
+			LCD_String_xy (0, 0, "Orange Velocity");
+			
+			sprintf( buf, "%d", min_velocity[2]);
+			LCD_String_xy (1, 8, buf);
+
+			_delay_ms(100);
+			break;
+			case 7:
+			LCD_Command(0x01);
+			LCD_String_xy (0, 4, "Blue Note");
+			sprintf( buf, "%d", note_C[3]);
+			LCD_String_xy (1, 8, buf);
+
+			_delay_ms(100);
+			break;
+			case 8:
+			LCD_Command(0x01);
+			LCD_String_xy (0, 0, "Blue Velocity");
+			
+			sprintf( buf, "%d", min_velocity[3]);
+			LCD_String_xy (1, 8, buf);
+
+			_delay_ms(100);
+			break;
+			case 9:
+			LCD_Command(0x01);
+			LCD_String_xy (0, 4, "Yellow Note");
+			sprintf( buf, "%d", note_C[4]);
+			LCD_String_xy (1, 8, buf);
+
+			_delay_ms(100);
+			break;
+			case 10:
+			LCD_Command(0x01);
+			LCD_String_xy (0, 0, "Yellow Velocity");
+			
+			sprintf( buf, "%d", min_velocity[4]);
+			LCD_String_xy (1, 8, buf);
+
+			_delay_ms(100);
+			break;
+			case 11:
+			LCD_Command(0x01);
+			LCD_String_xy (0, 4, "Red Note");
+			sprintf( buf, "%d", note_C[5]);
+			LCD_String_xy (1, 8, buf);
+
+			_delay_ms(100);
+			break;
+			case 12:
+			LCD_Command(0x01);
+			LCD_String_xy (0, 0, "Red Velocity");
+			
+			sprintf( buf, "%d", min_velocity[5]);
+			LCD_String_xy (1, 8, buf);
+
+			_delay_ms(100);
+			break;
+			
+		}
+	}
+	void LCD_menu_change_value(uint8_t state,uint8_t plusz_minus)
+	{
+		char buf[ 1024];
+		switch(state)
+		{
+			case 1:
+			note_value_changer(0,plusz_minus);
+			LCD_Command(0x01);
+			LCD_String_xy (0, 4, "Kick Note");
+			sprintf( buf, "%d", note_C[0]);
+			LCD_String_xy (1, 8, buf);
+
+			_delay_ms(100);
+			break;
+			case 2:
+			velocity_value_changer(0,plusz_minus);
+			LCD_Command(0x01);
+			LCD_String_xy (0, 0, "Kick Velocity");
+			sprintf( buf, "%d", min_velocity[0]);
+			LCD_String_xy (1, 8, buf);
+			_delay_ms(100);
+			break;
+			case 3:
+			note_value_changer(1,plusz_minus);
+			LCD_Command(0x01);
+			LCD_String_xy (0, 4, "Green Note");
+			sprintf( buf, "%d", note_C[1]);
+			LCD_String_xy (1, 8, buf);
+
+			_delay_ms(100);
+			break;
+			case 4:
+			velocity_value_changer(1,plusz_minus);
+			LCD_Command(0x01);
+			LCD_String_xy (0, 0, "Green Velocity");
+			
+			sprintf( buf, "%d", min_velocity[1]);
+			LCD_String_xy (1, 8, buf);
+
+			_delay_ms(100);
+			break;
+			case 5:
+			note_value_changer(2,plusz_minus);
+			LCD_Command(0x01);
+			LCD_String_xy (0, 4, "Orange Note");
+			sprintf( buf, "%d", note_C[2]);
+			LCD_String_xy (1, 8, buf);
+
+			_delay_ms(100);
+			break;
+			case 6:
+			velocity_value_changer(2,plusz_minus);
+			LCD_Command(0x01);
+			LCD_String_xy (0, 0, "Orange Velocity");
+			
+			sprintf( buf, "%d", min_velocity[2]);
+			LCD_String_xy (1, 8, buf);
+
+			_delay_ms(100);
+			break;
+			case 7:
+			note_value_changer(3,plusz_minus);
+			LCD_Command(0x01);
+			LCD_String_xy (0, 4, "Blue Note");
+			sprintf( buf, "%d", note_C[3]);
+			LCD_String_xy (1, 8, buf);
+
+			_delay_ms(100);
+			break;
+			case 8:
+			velocity_value_changer(3,plusz_minus);
+			LCD_Command(0x01);
+			LCD_String_xy (0, 0, "Blue Velocity");
+			
+			sprintf( buf, "%d", min_velocity[3]);
+			LCD_String_xy (1, 8, buf);
+
+			_delay_ms(100);
+			break;
+			case 9:
+			note_value_changer(4,plusz_minus);
+			LCD_Command(0x01);
+			LCD_String_xy (0, 4, "Yellow Note");
+			sprintf( buf, "%d", note_C[4]);
+			LCD_String_xy (1, 8, buf);
+
+			_delay_ms(100);
+			break;
+			case 10:
+			velocity_value_changer(4,plusz_minus);
+			LCD_Command(0x01);
+			LCD_String_xy (0, 0, "Yellow Velocity");
+			
+			sprintf( buf, "%d", min_velocity[4]);
+			LCD_String_xy (1, 8, buf);
+
+			_delay_ms(100);
+			break;
+			case 11:
+			note_value_changer(5,plusz_minus);
+			LCD_Command(0x01);
+			LCD_String_xy (0, 4, "Red Note");
+			sprintf( buf, "%d", note_C[5]);
+			LCD_String_xy (1, 8, buf);
+
+			_delay_ms(100);
+			break;
+			case 12:
+			velocity_value_changer(5,plusz_minus);
+			LCD_Command(0x01);
+			LCD_String_xy (0, 0, "Red Velocity");
+			
+			sprintf( buf, "%d", min_velocity[5]);
 			LCD_String_xy (1, 8, buf);
 
 			_delay_ms(100);
@@ -100,12 +344,35 @@ void pusheddown_doingsomething_state(uint8_t mask,char port, uint8_t button,char
 {
 	if (BUTTON_FLAGS[button] == 1)
 			{
-				if(button == 0 || button == 1)
+				if(button == 0)
 				{
+					menu_state = (menu_state+1)%(13);
 					LCD_menu(menu_state);
-					menu_state = (menu_state+1)%(3);
+					
 				}
-							}
+				if(button == 1)
+				{
+					if (menu_state>0)
+					{
+						menu_state = menu_state -1;
+					}
+					else
+					{
+						menu_state = 13;
+					}
+					
+					LCD_menu(menu_state);
+					
+				}
+				if (button == 2)
+				{
+					LCD_menu_change_value(menu_state,0);
+				}
+				if (button == 3)
+				{
+					LCD_menu_change_value(menu_state,1);
+				}
+			}
 			BUTTON_FLAGS[button] = 0;
 			if (!(button_down(mask, port)))
 			{
@@ -224,7 +491,7 @@ int main(void)
 			pusheddown_wait_state(BUTTON2_MASK,'E',1);
 			break;
 			case PushedDown_DoingSomething:
-			pusheddown_doingsomething_state(BUTTON2_MASK, 'E', 1,"Rihtt" );
+			pusheddown_doingsomething_state(BUTTON2_MASK, 'E', 1,"Right" );
 			break;
 			case Released_Wait:
 			released_wait_state(BUTTON2_MASK,'E', 1);
@@ -310,19 +577,19 @@ ISR(TCB0_INT_vect){
 		break;
 		
 		case 2:
-		ADC0.MUXPOS = ADC_MUXPOS_AIN2_gc;
+		//ADC0.MUXPOS = ADC_MUXPOS_AIN2_gc;
 		break;
 		
 		case 3:
-		ADC0.MUXPOS = ADC_MUXPOS_AIN3_gc;
+		//ADC0.MUXPOS = ADC_MUXPOS_AIN3_gc;
 		break;
 		
 		case 4:
-		ADC0.MUXPOS = ADC_MUXPOS_AIN4_gc;
+		//ADC0.MUXPOS = ADC_MUXPOS_AIN4_gc;
 		break;
 		
 		case 5:
-		ADC0.MUXPOS = ADC_MUXPOS_AIN5_gc;
+		//ADC0.MUXPOS = ADC_MUXPOS_AIN5_gc;
 		break;
 		
 		//Ide egy iemr változó mindegyik gombra És ezt a Timert csökkentem de 0 alá ne menjen
@@ -350,7 +617,7 @@ ISR(ADC0_RESRDY_vect)
 		}
 		else
 		{
-			channel_looker = (channel_looker+1)%(5);
+			channel_looker = (channel_looker+1)%(2);
 		}
 		//Növeli a hit timert, ha már volt ütés
 		if (hit_couter[channel_looker] < time_note && hit_couter[channel_looker] > 0)
@@ -374,7 +641,7 @@ ISR(ADC0_RESRDY_vect)
 			//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			hit_couter[channel_looker] = 0;
 			//Channel change
-			channel_looker = (channel_looker+1)%(5);
+			channel_looker = (channel_looker+1)%(2);
 		}
 		break;
 		case There_was_hit:
@@ -403,7 +670,7 @@ ISR(ADC0_RESRDY_vect)
 			//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			hit_couter[channel_looker] = 0;
 			state[channel_looker] = Default_state;
-			channel_looker = (channel_looker+1)%(5);
+			channel_looker = (channel_looker+1)%(2);
 		}
 	}
 	
