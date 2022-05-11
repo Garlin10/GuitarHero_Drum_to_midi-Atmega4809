@@ -25,16 +25,17 @@ volatile uint16_t n = 0;
 volatile uint8_t bufferLength = 0;
 volatile uint8_t readIndex = 0;
 volatile uint8_t writeIndex = 0;
+volatile uint8_t menu_state = 0;
 volatile uint8_t buffer[SIZE_OF_BUFFER];
 volatile uint8_t channel_looker = 0;
 //volatile uint16_t counter[6] = 0;
 volatile uint8_t note_velocity[6];
-const uint16_t min_velocity[6] = {10,10,20,32,20,20};
+const uint16_t min_velocity[6] = {10,10,20,32,20,300};
 volatile uint16_t hit_couter[6] = {0};
 volatile uint16_t time_note = 120;
 volatile uint16_t actual_max_velo[6];
 const uint8_t note_on = 0b10010000;
-const uint8_t note_C[6] = {25,36,0b00000110,0b00000111,15, 0b00001101};
+const uint8_t note_C[6] = {0,1,2,3,4, 5};
 void sending(uint8_t note_switch,uint8_t note_NOTE,uint8_t note_volume);
 void put_to_buffer(uint8_t note_switch,uint8_t note_NOTE,uint8_t note_volume);
 volatile Button_Machine Button_Machines[4] = {Released,Released,Released,Released};
@@ -42,6 +43,7 @@ volatile uint8_t BUTTON_FLAGS[4] = {0,0,0,0};
 volatile int Button_Timers[4] = {0,0,0,0};
 	void LCD_menu(uint8_t state)
 	{
+		char buf[ 1024];
 		switch (state)
 		{
 			case 0:
@@ -53,9 +55,17 @@ volatile int Button_Timers[4] = {0,0,0,0};
 			break;
 			case 1:
 			LCD_Command(0x01);
-			LCD_String_xy (0, 4, "Red Note");
-			char buf[ 1024];
+			LCD_String_xy (0, 4, "Kick Note");
 			sprintf( buf, "%d", note_C[0]);
+			LCD_String_xy (1, 8, buf);
+
+			_delay_ms(100);
+			break;
+			case 2:
+			LCD_Command(0x01);
+			LCD_String_xy (0, 0, "Kick Velocity");
+			
+			sprintf( buf, "%d", note_velocity[0]);
 			LCD_String_xy (1, 8, buf);
 
 			_delay_ms(100);
@@ -92,7 +102,8 @@ void pusheddown_doingsomething_state(uint8_t mask,char port, uint8_t button,char
 			{
 				if(button == 0 || button == 1)
 				{
-					LCD_menu(1);
+					LCD_menu(menu_state);
+					menu_state = (menu_state+1)%(3);
 				}
 							}
 			BUTTON_FLAGS[button] = 0;
@@ -339,7 +350,7 @@ ISR(ADC0_RESRDY_vect)
 		}
 		else
 		{
-			channel_looker = (channel_looker+1)%(6);
+			channel_looker = (channel_looker+1)%(5);
 		}
 		//Növeli a hit timert, ha már volt ütés
 		if (hit_couter[channel_looker] < time_note && hit_couter[channel_looker] > 0)
@@ -363,7 +374,7 @@ ISR(ADC0_RESRDY_vect)
 			//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			hit_couter[channel_looker] = 0;
 			//Channel change
-			channel_looker = (channel_looker+1)%(6);
+			channel_looker = (channel_looker+1)%(5);
 		}
 		break;
 		case There_was_hit:
@@ -392,7 +403,7 @@ ISR(ADC0_RESRDY_vect)
 			//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 			hit_couter[channel_looker] = 0;
 			state[channel_looker] = Default_state;
-			channel_looker = (channel_looker+1)%(6);
+			channel_looker = (channel_looker+1)%(5);
 		}
 	}
 	
